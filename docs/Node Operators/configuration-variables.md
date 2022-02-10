@@ -69,7 +69,6 @@ Your node applies configuration settings using following hierarchy:
   - [LOG_FILE_DIR](#log_file_dir)
   - [LOG_LEVEL](#log_level)
   - [LOG_SQL](#log_sql)
-  - [LOG_TO_DISK](#log_to_disk)
   - [LOG_UNIX_TS](#log_unix_ts)
 - [Chainlink Web Server](#chainlink-web-server)
   - [ALLOW_ORIGINS](#allow_origins)
@@ -448,12 +447,6 @@ The available options are:
 - Default: `"false"`
 
 This setting tells the Chainlink node to log SQL statements made using the default logger. SQL statements will be logged at `debug` level. Not all statements can be logged. The best way to get a true log of all SQL statements is to enable SQL statement logging on Postgres.
-
-### LOG_TO_DISK
-
-- Default: `"true"`
-
-Enables or disables the node writing to the `$LOG_FILE_DIR/log.jsonl` file
 
 ### LOG_UNIX_TS
 

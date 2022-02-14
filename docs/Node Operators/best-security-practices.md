@@ -72,6 +72,7 @@ The following are suggestions for job specifications and configuration settings 
 [Configuring Chainlink Nodes](../configuration-variables/):
 - [MINIMUM_CONTRACT_PAYMENT_LINK_JUELS](../configuration-variables/#minimum_contract_payment_link_juels): ensure your required payment amount is high enough to meet the costs of responding on-chain.
 - [MIN_INCOMING_CONFIRMATIONS](../configuration-variables/#min_incoming_confirmations): this can be set to 0 for common data request jobs. See the bullet above on setting individual `confirmations` for specific jobs.
+- [LOG_TO_DISK](../configuration-variables/#log_to_disk): Set to `false` if you're using external log drivers which parse the output from Docker containers. This will save you disk space.
 - [JSON_CONSOLE](../configuration-variables/#json_console): Set to `true` if you're using external log drivers to parse the output of Docker containers. This will make it easier to parse individual fields of the log and set up alerts.
 
 ## Addresses

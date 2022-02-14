@@ -70,6 +70,9 @@ Your node applies configuration settings using following hierarchy:
   - [LOG_LEVEL](#log_level)
   - [LOG_SQL](#log_sql)
   - [LOG_TO_DISK](#log_to_disk)
+  - [LOG_FILE_MAX_SIZE](#log_file_max_size)
+  - [LOG_FILE_MAX_AGE](#log_file_max_age)
+  - [LOG_FILE_MAX_BACKUPS](#log_file_max_backups)
   - [LOG_UNIX_TS](#log_unix_ts)
 - [Chainlink Web Server](#chainlink-web-server)
   - [ALLOW_ORIGINS](#allow_origins)
@@ -453,7 +456,25 @@ This setting tells the Chainlink node to log SQL statements made using the defau
 
 - Default: `"true"`
 
-Enables or disables the node writing to the `$LOG_FILE_DIR/log.jsonl` file
+Enables or disables the node writing to the `$LOG_FILE_DIR/log.jsonl` file.
+
+### LOG_FILE_MAX_SIZE
+
+- Default: `"1"`
+
+Determines the log file's max size (in megabytes) before file rotation.
+
+### LOG_FILE_MAX_AGE
+
+- Default: `"1"`
+
+Determines the log file's max age (in days) before file rotation.
+
+### LOG_FILE_MAX_BACKUPS
+
+- Default: `"1"`
+
+Determines the max amount of old log files to retain (though `LOG_FILE_MAX_AGE` may still cause them to get deleted).
 
 ### LOG_UNIX_TS
 

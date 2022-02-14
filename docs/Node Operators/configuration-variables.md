@@ -439,6 +439,7 @@ By default, Chainlink nodes write log data to `$ROOT/log.jsonl`. The log directo
 The `LOG_LEVEL` environment variable determines both what is printed on the screen and what is written to the log file.
 
 The available options are:
+
 - `"debug"`: Useful for forensic debugging of issues.
 - `"info"`: High level informational messages.
 - `"warn"`: Something unexpected happened that might need non-urgent action. Node operators should check these once in a while to see whether anything stands out (e.g. deprecation warnings).
@@ -460,21 +461,21 @@ Enables or disables the node writing to the `$LOG_FILE_DIR/log.jsonl` file.
 
 ### LOG_FILE_MAX_SIZE
 
-- Default: `"1"`
+- Default: `"1024"`
 
 Determines the log file's max size (in megabytes) before file rotation.
 
 ### LOG_FILE_MAX_AGE
 
-- Default: `"1"`
+- Default: `"0"`
 
-Determines the log file's max age (in days) before file rotation.
+Determines the log file's max age (in days) before file rotation. Keeping this config with the default value means not to remove old log files.
 
 ### LOG_FILE_MAX_BACKUPS
 
-- Default: `"1"`
+- Default: `"0"`
 
-Determines the max amount of old log files to retain (though `LOG_FILE_MAX_AGE` may still cause them to get deleted).
+Determines the max amount of old log files to retain. Keeping this config with the default value means to retain all old log files (though `LOG_FILE_MAX_AGE` may still cause them to get deleted).
 
 ### LOG_UNIX_TS
 

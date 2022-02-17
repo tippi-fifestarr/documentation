@@ -461,7 +461,7 @@ Enables or disables the node writing to the `$LOG_FILE_DIR/log.jsonl` file.
 
 ### LOG_FILE_MAX_SIZE
 
-- Default: `"1024mb"`
+- Default: `"5120mb"`
 
 Determines the log file's max size (in megabytes) before file rotation.
 

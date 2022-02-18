@@ -473,7 +473,7 @@ Determines the log file's max age (in days) before file rotation. Keeping this c
 
 ### LOG_FILE_MAX_BACKUPS
 
-- Default: `"0"`
+- Default: `"1"`
 
 Determines the max amount of old log files to retain. Keeping this config with the default value means to retain all old log files (though `LOG_FILE_MAX_AGE` may still cause them to get deleted).
 

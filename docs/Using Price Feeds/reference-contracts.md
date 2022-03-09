@@ -36,10 +36,10 @@ For more information on these categories, see the [Selecting Quality Data Feeds]
 
 - EVM (Ethereum) Chains
   - [Ethereum Data Feeds](../ethereum-addresses/)
-  - [Binance Smart Chain Data Feeds](../binance-smart-chain-addresses/)
+  - [BNB Chain Data Feeds](../bnb-chain-addresses/)
   - [Polygon (Matic) Data Feeds](../matic-addresses/)
   - [Gnosis Chain (xDai) Data Feeds](../data-feeds-gnosis-chain/)
-  - [Huobi Eco Chain Data Feeds](../huobi-eco-chain-price-feeds/)
+  - [HECO Chain Data Feeds](../huobi-eco-chain-price-feeds/)
   - [Avalanche Data Feeds](../avalanche-price-feeds/)
   - [Fantom Data Feeds](../fantom-price-feeds/)
   - [Arbitrum Data Feeds](../arbitrum-price-feeds/)

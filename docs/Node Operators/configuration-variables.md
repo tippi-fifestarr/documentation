@@ -12,13 +12,13 @@ Not all environment variables are documented here. Any undocumented environment 
 
 To reiterate: _If you have an environment variable set that is not listed here, and you don't know exactly why you have it set, you should remove it!_
 
-The environment variables listed here are explicitly supported and current as of Chainlink node v1.1.0.
+The environment variables listed here are explicitly supported and current as of Chainlink node v1.2.0.
 
-## Changes to node configuration in v1.1.0 nodes
+## Changes to node configuration starting in v1.1.0 nodes
 
 As of Chainlink node v1.1.0 and up, the way nodes manage configuration is changing. Previously, environment variables exclusively handled all node configuration. Although this configuration method worked well in the past, it has its limitations. Notably, it doesn't mesh well with chain-specific configuration profiles.
 
-For this reason, Chainlink nodes are moving towards a model where you set variables using the API, CLI, or GUI, and the configuration is saved in the database. We encourage you to become familiar with this model because it is likely that nodes will continue to move away from environment variable configuration in the future.
+For this reason, Chainlink nodes are moving towards a model where you set variables using the API, [CLI](/docs/configuration-variables/#cli-client), or GUI, and the configuration is saved in the database. We encourage you to become familiar with this model because it is likely that nodes will continue to move away from environment variable configuration in the future.
 
 As of v1.1.0, Chainlink nodes still support environment variables to configure node settings and chain-specific settings. If the environment variable is set, it overrides any chain-specific, job-specific, or database configuration setting. The log displays a warning to indicate when an override happens, so you know when variables lower in the hierarchy are being ignored.
 
@@ -30,7 +30,7 @@ Your node applies configuration settings using following hierarchy:
 
 ## Table of contents
 
-- [Changes to node configuration in v1.1.0 nodes](#changes-to-node-configuration-in-v110-nodes)
+- [Changes to node configuration starting in v1.1.0 nodes](#changes-to-node-configuration-starting-in-v110-nodes)
 - [Table of contents](#table-of-contents)
 - [Essential environment variables](#essential-environment-variables)
   - [DATABASE_URL](#database_url)
@@ -44,6 +44,14 @@ Your node applies configuration settings using following hierarchy:
   - [TELEMETRY_INGRESS_LOGGING](#telemetry_ingress_logging)
   - [TELEMETRY_INGRESS_URL](#telemetry_ingress_url)
   - [TELEMETRY_INGRESS_SERVER_PUB_KEY](#telemetry_ingress_server_pub_key)
+  - [TELEMETRY_INGRESS_BUFFER_SIZE](#telemetry_ingress_buffer_size)
+  - [TELEMETRY_INGRESS_MAX_BATCH_SIZE](#telemetry_ingress_max_batch_size)
+  - [TELEMETRY_INGRESS_SEND_INTERVAL](#telemetry_ingress_send_interval)
+  - [TELEMETRY_INGRESS_USE_BATCH_SEND](#telemetry_ingress_use_batch_send)
+- [Chains](#chains)
+  - [SOLANA_ENABLED](#solana_enabled)
+  - [TERRA_ENABLED](#terra_enabled)
+  - [EVM_ENABLED](#evm_enabled)
 - [Database Settings](#database-settings)
   - [MIGRATE_DATABASE](#migrate_database)
   - [ORM_MAX_IDLE_CONNS](#orm_max_idle_conns)
@@ -93,8 +101,7 @@ Your node applies configuration settings using following hierarchy:
   - [ETH_SECONDARY_URLS](#eth_secondary_urls)
 - [EVM/Ethereum Global Settings](#evmethereum-global-settings)
   - [ETH_CHAIN_ID](#eth_chain_id)
-  - [EVM_DISABLED](#evm_disabled)
-  - [ETH_DISABLED](#eth_disabled)
+  - [EVM_RPC_ENABLED](#evm_rpc_enabled)
 - [EVM/Ethereum Chain-specific Overrides](#evmethereum-chain-specific-overrides)
   - [BALANCE_MONITOR_ENABLED](#balance_monitor_enabled)
   - [BLOCK_BACKFILL_DEPTH](#block_backfill_depth)
@@ -202,7 +209,7 @@ The PostgreSQL URI to connect to your database. Chainlink nodes require Postgres
 
 - Default: _none_
 
-CHAIN_TYPE overrides all chains and forces them to act as a particular chain type. An up-to-date list of chain types is given in [`chaintype.go`](https://github.com/smartcontractkit/chainlink/blob/v1.1.0/core/chains/chaintype.go).
+CHAIN_TYPE overrides all chains and forces them to act as a particular chain type. An up-to-date list of chain types is given in [`chaintype.go`](https://github.com/smartcontractkit/chainlink/blob/v1.2.0/core/chains/chaintype.go).
 
 This variable enables some chain-specific hacks and optimizations. It is recommended not to use this environment variable and set the chain-type on a per-chain basis instead.
 
@@ -253,6 +260,54 @@ The URL to connect to for sending telemetry.
 - Default: _none_
 
 The public key of the telemetry server.
+
+### TELEMETRY_INGRESS_BUFFER_SIZE
+
+- Default: `"100"`
+
+The number of telemetry messages to buffer before dropping new ones.
+
+### TELEMETRY_INGRESS_MAX_BATCH_SIZE
+
+- Default: `"50"`
+
+The maximum number of messages to batch into one telemetry request.
+
+### TELEMETRY_INGRESS_SEND_INTERVAL
+
+- Default: `"500ms"`
+
+The interval on which batched telemetry is sent to the ingress server.
+
+### TELEMETRY_INGRESS_USE_BATCH_SEND
+
+- Default: `"true"`
+
+Toggles sending telemetry to the ingress server using the batch client.
+
+## Chains
+
+### SOLANA_ENABLED
+
+> 🚧 Not intended for use on the Solana mainnet.
+
+- Default: `"false"`
+
+Enables Solana support.
+
+### TERRA_ENABLED
+
+> 🚧 Not intended for use on the Terra mainnet.
+
+- Default: `"false"`
+
+Enables Terra support.
+
+### EVM_ENABLED
+
+- Default: `"true"`
+
+Enables support for EVM-based chains. By default, this variable is set to `true` to provide legacy compatibility and ease the upgrade path from older versions of Chainlink which did not support disabling EVM.
 
 ## Database Settings
 
@@ -312,7 +367,8 @@ The default is set to `advisorylock`.
 
 ### ADVISORY_LOCK_CHECK_INTERVAL
 
-ADVANCED - DEV ONLY, not released
+**ADVANCED**
+
 Do not change this setting unless you know what you are doing.
 
 This setting applies only if `DATABASE_LOCKING_MODE` is set to enable advisory locking.
@@ -323,7 +379,8 @@ This setting applies only if `DATABASE_LOCKING_MODE` is set to enable advisory l
 
 ### ADVISORY_LOCK_ID
 
-ADVANCED - DEV ONLY, not released
+**ADVANCED**
+
 Do not change this setting unless you know what you are doing.
 
 This setting applies only if `DATABASE_LOCKING_MODE` is set to enable advisory locking.
@@ -336,7 +393,7 @@ This setting applies only if `DATABASE_LOCKING_MODE` is set to enable advisory l
 
 **ADVANCED**
 
-It is not recommended to change this setting unless you know what you are doing.
+Do not change this setting unless you know what you are doing.
 
 This setting applies only if `DATABASE_LOCKING_MODE` is set to enable lease locking.
 
@@ -348,7 +405,7 @@ How long the lease lock will last before expiring.
 
 **ADVANCED**
 
-It is not recommended to change this setting unless you know what you are doing.
+Do not change this setting unless you know what you are doing.
 
 This setting applies only if `DATABASE_LOCKING_MODE` is set to enable lease locking.
 
@@ -399,7 +456,6 @@ This variable sets the directory to use for saving the backup file. Use this if 
 Set this to true to enable JSON logging. Otherwise, the log is saved in a human-friendly console format.
 
 ### LOG_FILE_DIR
-DEV ONLY - not released
 
 - Default: `"$ROOT"`
 
@@ -470,8 +526,10 @@ You can set `ALLOW_ORIGINS=*` to allow the UI to work from any URL, but it is re
 Usually this will be the same as the URL/IP and port you use to connect to the Chainlink UI, such as `https://my-chainlink-node.example.com:6688`.
 
 ### HTTP_SERVER_WRITE_TIMEOUT
-ADVANCED
-It is not recommended to change this unless you know what you are doing.
+
+**ADVANCED**
+
+Do not change this setting unless you know what you are doing.
 
 - Default: `"10s"`
 
@@ -481,7 +539,7 @@ It is not recommended to change this unless you know what you are doing.
 
 - Default: `"6688"`
 
-Port used for the [Chainlink Node API](../chainlink-node-api-reference/) and GUI.
+Port used for the Chainlink Node API, [CLI](/docs/configuration-variables/#cli-client), and GUI.
 
 ### SECURE_COOKIES
 
@@ -563,17 +621,17 @@ The location of the TLS private key file. Example: `/home/$USER/.chainlink/tls/s
 
 Previous Chainlink node versions supported only one chain. From v1.1.0 and up, Chainlink nodes support multiple EVM and non-EVM chains, so the way that chains and nodes are configured has changed.
 
-The preferred way of configuring Chainlink nodes as of v1.1.0 and up is to use the API, CLI, or UI to set chain-specific configuration and create nodes.
+The preferred way of configuring Chainlink nodes as of v1.1.0 and up is to use the API, [CLI](/docs/configuration-variables/#cli-client), or UI to set chain-specific configuration and create nodes.
 
 The old way of specifying chains using environment variables is still supported, but discouraged. It works as follows:
 
 If you set any value for `ETH_URL`, the values of `ETH_CHAIN_ID`, `ETH_URL`, `ETH_HTTP_URL` and `ETH_SECONDARY_URLS` will be used to create and update chains and nodes representing these values in the database. If an existing chain or node is found, it will be overwritten. This mode is used mainly to ease the process of upgrading. On subsequent runs (once your old settings have been written to the database) it is recommended to unset `ETH_URL` and use the API commands exclusively to administer chains and nodes.
 
-In the future, support for the `ETH_URL` and associated environment variables might be removed, so it is recommended to use the API, CLI, or GUI instead to setup chains and nodes.
+In the future, support for the `ETH_URL` and associated environment variables might be removed, so it is recommended to use the API, [CLI](/docs/configuration-variables/#cli-client), or GUI instead to setup chains and nodes.
 
 ### ETH_URL
 
-(Setting this will enable "legacy eth ENV" mode which is not compatible with multichain, prefer to configure in the CLI/API/GUI instead)
+Setting this will enable "legacy eth ENV" mode, which is not compatible with multi-chain. It is better to configure settings using the API, [CLI](/docs/configuration-variables/#cli-client), or GUI instead.
 
 - Default: _none_
 
@@ -583,7 +641,7 @@ NOTE: It is also required to set `ETH_CHAIN_ID` if you set ETH_URL.
 
 ### ETH_HTTP_URL
 
-(Only has effect if `ETH_URL` set to something, otherwise can be set in the CLI/API/GUI)
+Only has effect if `ETH_URL` set. Otherwise, it can be set in the API, [CLI](/docs/configuration-variables/#cli-client), or GUI.
 
 - Default: _none_
 
@@ -591,7 +649,7 @@ This should be set to the HTTP URL that points to the same ETH node as the prima
 
 ### ETH_SECONDARY_URLS
 
-(Only has effect if `ETH_URL` set to something, otherwise can be set in the CLI/API/GUI)
+Only has effect if `ETH_URL` set. Otherwise, it can be set in the API, [CLI](/docs/configuration-variables/#cli-client), or GUI.
 
 - Default: _none_
 
@@ -613,17 +671,11 @@ This configuration is specific to EVM/Ethereum chains.
 
 This environment variable specifies the default chain ID. Any job spec that has not explicitly set `EVMChainID` will connect to this default chain. If you do not have a chain in the database matching this value, any jobs that try to use it will throw an error.
 
-### EVM_DISABLED
+### EVM_RPC_ENABLED
 
-- Default: `"false"`
+- Default: `"true"`
 
-Disable EVM entirely. No services related to EVM chains will be spun up at all. This can be useful in some cases e.g. on a node that only runs Cron jobs that post to an HTTP API, or for node that don't use any EVM chains.
-
-### ETH_DISABLED
-
-- Default: `"false"`
-
-Disable connecting to any ETH nodes. This can be useful in certain cases, e.g. to spin up a Chainlink node and add jobs without having it execute anything.
+Enables connecting to real EVM RPC nodes. Disabling this can be useful in certain cases such as spinning up a Chainlink node and adding EVM-based jobs without having it actually execute anything on-chain, or for debugging to see what the node _would_ do without actually doing it.
 
 ## EVM/Ethereum Chain-specific Overrides
 
@@ -657,7 +709,7 @@ This might be useful on fast chains and if only recent chain events are relevant
 
 ### ETH_TX_REAPER_INTERVAL
 
-NOTE: This overrides the setting for _all_ chains, you might want to set this on a per-chain basis using the API, CLI, or GUI instead.
+NOTE: This overrides the setting for _all_ chains, you might want to set this on a per-chain basis using the API, [CLI](/docs/configuration-variables/#cli-client), or GUI instead
 
 - Default: `"1h"`
 
@@ -678,7 +730,7 @@ Setting to `0` disables the reaper.
 
 ### ETH_TX_RESEND_AFTER_THRESHOLD
 
-NOTE: This overrides the setting for _all_ chains, you might want to set this on a per-chain basis using the API, CLI, or GUI instead.
+NOTE: This overrides the setting for _all_ chains, you might want to set this on a per-chain basis using the API, [CLI](/docs/configuration-variables/#cli-client), or GUI instead.
 
 - Default: _automatically set based on Chain ID, typically 1m_
 
@@ -768,7 +820,7 @@ This can be overridden on a per-task basis by setting the `MinRequiredOutgoingCo
 > ⚠️ NOTE
 > This has replaced the formerly used MINIMUM_CONTRACT_PAYMENT
 
-- Default: _automatically set based on Chain ID, typically 10000000000000 (0.00001 LINK) on all chains except mainnet, where it is 0.1 LINK_
+- Default: _automatically set based on Chain ID, typically 10000000000000 (0.00001 LINK) on all chains except ETH Mainnet, Kovan, Goerli, and Rinkeby, where it is 100000000000000000 (0.1 LINK)._
 
 For jobs that use the `EthTx` adapter, this is the minimum payment amount in order for the node to accept and process the job. Since there are no decimals on the EVM, the value is represented like wei.
 
@@ -780,7 +832,7 @@ For jobs that use the `EthTx` adapter, this is the minimum payment amount in ord
 
 These settings allow you to tune your node's gas limits and pricing. In most cases, leaving these values at their defaults should give good results.
 
-As of Chainlink node v1.1.0, it is recommended to use the API, CLI, or GUI to configure gas controls because you might want to use different settings for different chains. Setting the environment variable typically overrides the setting for all chains.
+As of Chainlink node v1.1.0, it is recommended to use the API, [CLI](/docs/configuration-variables/#cli-client), or GUI to configure gas controls because you might want to use different settings for different chains. Setting the environment variable typically overrides the setting for all chains.
 
 ### Configuring your ETH node
 
@@ -899,7 +951,7 @@ The number of transactions to gas bump starting from oldest. Set to 0 for no lim
 
 The minimum fixed amount of wei by which gas is bumped on each transaction attempt.
 
-### EVM_GAS_FEE_CAP_DEFAULT 
+### EVM_GAS_FEE_CAP_DEFAULT
 
 - Default: _automatic based on chain ID_
 
@@ -1009,7 +1061,7 @@ Chainlink nodes will automatically try to sync its local nonce with the remote c
 
 These settings allow you to configure how your node calculates gas prices. In most cases, leaving these values at their defaults should give good results.
 
-As of Chainlink node v1.1.0, it is recommended to use the API, CLI, or GUI to configure gas controls because you might want to use different settings for different chains. Setting the environment variable typically overrides the setting for all chains.
+As of Chainlink node v1.1.0, it is recommended to use the API, [CLI](/docs/configuration-variables/#cli-client), or GUI to configure gas controls because you might want to use different settings for different chains. Setting the environment variable typically overrides the setting for all chains.
 
 Chainlink nodes decide what gas price to use using an `Estimator`. It ships with several simple and battle-hardened built-in estimators that should work well for almost all use-cases. Note that estimators will change their behaviour slightly depending on if you are in EIP-1559 mode or not.
 
@@ -1054,7 +1106,8 @@ available from the connected node via RPC, due to race conditions in the code of
 "zero" blocks that are missing transactions.
 
 ### BLOCK_HISTORY_ESTIMATOR_EIP1559_FEE_CAP_BUFFER_BLOCKS
-** Advanced **
+
+**ADVANCED**
 
 - Default: _gas bump threshold + 1 block_
 
@@ -1167,7 +1220,7 @@ Set to `0` to disable the periodic reaper.
 
 Some jobs write their results asynchronously for performance reasons such as OCR. `JOB_PIPELINE_RESULT_WRITE_QUEUE_DEPTH` controls how many writes will be buffered before subsequent writes are dropped.
 
-It is not recommended to change this setting unless you know what you are doing.
+Do not change this setting unless you know what you are doing.
 
 ## OCR
 
@@ -1282,40 +1335,50 @@ The default peer ID to use for OCR jobs. If unspecified, uses the first availabl
 `KEEPER_GAS_TIP_CAP_BUFFER_PERCENT` adds the specified percentage to the gas price used for checking whether to perform an upkeep. Only applies in EIP-1559 mode.
 
 ### KEEPER_MAXIMUM_GRACE_PERIOD
-ADVANCED
-It is not recommended to change this setting unless you know what you are doing.
+
+**ADVANCED**
+
+Do not change this setting unless you know what you are doing.
 
 - Default: `"100"`
 
 The maximum number of blocks that a keeper will wait after performing an upkeep before it resumes checking that upkeep
 
 ### KEEPER_REGISTRY_CHECK_GAS_OVERHEAD
-ADVANCED
-It is not recommended to change this setting unless you know what you are doing.
+
+**ADVANCED**
+
+Do not change this setting unless you know what you are doing.
 
 - Default: `"200000"`
 
 The amount of extra gas to provide checkUpkeep() calls to account for the gas consumed by the keeper registry.
 
 ### KEEPER_REGISTRY_PERFORM_GAS_OVERHEAD
-ADVANCED
-It is not recommended to change this setting unless you know what you are doing.
+
+**ADVANCED**
+
+Do not change this setting unless you know what you are doing.
 
 - Default: `"150000"`
 
 The amount of extra gas to provide performUpkeep() calls to account for the gas consumed by the keeper registry
 
 ### KEEPER_REGISTRY_SYNC_INTERVAL
-ADVANCED
-It is not recommended to change this setting unless you know what you are doing.
+
+**ADVANCED**
+
+Do not change this setting unless you know what you are doing.
 
 - Default: `"30m"`
 
 The interval in which the RegistrySynchronizer performs a full sync of the keeper registry contract it is tracking.
 
 ### KEEPER_REGISTRY_SYNC_UPKEEP_QUEUE_SIZE
-ADVANCED
-It is not recommended to change this setting unless you know what you are doing.
+
+**ADVANCED**
+
+Do not change this setting unless you know what you are doing.
 
 - Default: `"10"`
 

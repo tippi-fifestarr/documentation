@@ -211,6 +211,36 @@
         "source": "/docs/xdai-price-feeds",
         "destination": "/docs/data-feeds-gnosis-chain/",
         "type": 301
+      },
+      {
+        "source": "/docs/binance-smart-chain-price-feeds/",
+        "destination": "/docs/bnb-chain-price-feeds/",
+        "type": 301
+      },
+      {
+        "source": "/docs/binance-smart-chain-price-feeds",
+        "destination": "/docs/bnb-chain-price-feeds/",
+        "type": 301
+      },
+      {
+        "source": "/docs/faq/",
+        "destination": "/ethereum/",
+        "type": 301
+      },
+      {
+        "source": "/docs/faq",
+        "destination": "/ethereum/",
+        "type": 301
+      },
+      {
+        "source": "/docs/chainlink-node-api-reference/",
+        "destination": "/docs/configuration-variables/",
+        "type": 301
+      },
+      {
+        "source": "/docs/chainlink-node-api-reference",
+        "destination": "/docs/configuration-variables/",
+        "type": 301
       }
     ]
   }

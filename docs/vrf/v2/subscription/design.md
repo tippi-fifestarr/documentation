@@ -16,7 +16,7 @@ metadata:
 
 {% include 'sections/vrf-v2-subscription-common.md' %}
 
-This section explains how to generate random numbers using the subscription method.
+This section explains how to generate random numbers using the subscription method. <b> note: it's not on rinkybe its on goerli </b>
 
 <p>
   https://www.youtube.com/watch?v=rdJ5d8j1RCg
